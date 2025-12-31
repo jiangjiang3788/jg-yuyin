@@ -160,7 +160,7 @@ function setupEventSourceListener() {
 
 // MutationObserver 重试计数
 let observerRetryCount = 0;
-const MAX_OBSERVER_RETRIES = 30; // 最多重试30次（30秒）
+const MAX_OBSERVER_RETRIES = 5; // 最多重试5次（5秒）
 
 /**
  * 使用 MutationObserver 设置监听（降级方案）

@@ -170,37 +170,67 @@ export async function injectUI({ htmlUrl, mountSelector = '#extensions_settings'
 function createFloatingPanel(htmlContent) {
   log('创建浮动面板作为备选');
 
+  // 检查是否已存在
+  const existingPanel = document.getElementById('jg-yuyin-floating-panel');
+  if (existingPanel) {
+    log('浮动面板已存在，显示它');
+    existingPanel.style.display = 'block';
+    return;
+  }
+
   const panel = document.createElement('div');
   panel.id = 'jg-yuyin-floating-panel';
   panel.style.cssText = `
     position: fixed;
     top: 50px;
     right: 20px;
-    width: 400px;
+    width: 420px;
     max-height: 80vh;
     overflow-y: auto;
-    background: var(--SmartThemeBlurTintColor, #1a1a2e);
-    border: 1px solid var(--SmartThemeBorderColor, #444);
-    border-radius: 8px;
+    background: #1a1a2e;
+    border: 2px solid #666;
+    border-radius: 10px;
     padding: 15px;
-    z-index: 10000;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 99999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: block;
   `;
+
+  // 添加标题栏
+  const header = document.createElement('div');
+  header.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+  `;
+  header.innerHTML = '<h3 style="margin: 0; color: #fff;">🔊 jg-yuyin 语音设置</h3>';
 
   // 添加关闭按钮
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '×';
   closeBtn.style.cssText = `
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    background: none;
+    background: #ff4444;
     border: none;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
-    color: var(--SmartThemeBodyColor, #fff);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `;
-  closeBtn.onclick = () => panel.style.display = 'none';
+  closeBtn.onclick = () => {
+    panel.style.display = 'none';
+    log('浮动面板已隐藏');
+  };
+  header.appendChild(closeBtn);
 
   // 添加显示/隐藏切换按钮
   const toggleBtn = document.createElement('button');
@@ -210,23 +240,46 @@ function createFloatingPanel(htmlContent) {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    padding: 10px 15px;
-    background: var(--SmartThemeBlurTintColor, #1a1a2e);
-    border: 1px solid var(--SmartThemeBorderColor, #444);
-    border-radius: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
     cursor: pointer;
-    z-index: 10001;
-    color: var(--SmartThemeBodyColor, #fff);
+    z-index: 99999;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
   `;
+  toggleBtn.onmouseover = () => {
+    toggleBtn.style.transform = 'scale(1.05)';
+    toggleBtn.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
+  };
+  toggleBtn.onmouseout = () => {
+    toggleBtn.style.transform = 'scale(1)';
+    toggleBtn.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+  };
   toggleBtn.onclick = () => {
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    const isHidden = panel.style.display === 'none';
+    panel.style.display = isHidden ? 'block' : 'none';
+    log('浮动面板切换:', isHidden ? '显示' : '隐藏');
   };
 
-  panel.innerHTML = htmlContent;
-  panel.insertBefore(closeBtn, panel.firstChild);
+  // 创建内容容器
+  const contentDiv = document.createElement('div');
+  contentDiv.innerHTML = htmlContent;
+
+  // 组装面板
+  panel.appendChild(header);
+  panel.appendChild(contentDiv);
 
   document.body.appendChild(panel);
   document.body.appendChild(toggleBtn);
+
+  log('浮动面板已添加到 DOM');
+  log('面板元素:', panel);
+  log('切换按钮元素:', toggleBtn);
 
   uiInjected = true;
 
@@ -238,6 +291,19 @@ function createFloatingPanel(htmlContent) {
 
   // 设置 inline-drawer 折叠功能
   setupDrawerToggle();
+
+  // 默认展开 inline-drawer
+  setTimeout(() => {
+    const drawerContent = panel.querySelector('.inline-drawer-content');
+    if (drawerContent) {
+      drawerContent.style.display = 'block';
+      const icon = panel.querySelector('.inline-drawer-icon');
+      if (icon) {
+        icon.classList.add('down');
+      }
+    }
+    log('浮动面板初始化完成，内容已展开');
+  }, 200);
 }
 
 /**
