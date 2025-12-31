@@ -7,8 +7,6 @@
   "author": "酱酱",
   "loading_order": 100,
   "js": "index.js",
-  "css": "style.css",
-  "settings": {
-    "settings_page": "settings.html"
-  }
+  "css": "style.css"
+  
 }
