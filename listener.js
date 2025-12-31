@@ -158,6 +158,10 @@ function setupEventSourceListener() {
   log('SillyTavern 事件监听已设置');
 }
 
+// MutationObserver 重试计数
+let observerRetryCount = 0;
+const MAX_OBSERVER_RETRIES = 30; // 最多重试30次（30秒）
+
 /**
  * 使用 MutationObserver 设置监听（降级方案）
  */
@@ -167,10 +171,18 @@ function setupMutationObserver() {
   // 查找聊天容器
   const chatContainer = document.getElementById('chat');
   if (!chatContainer) {
-    log('未找到聊天容器 #chat，延迟重试...');
+    observerRetryCount++;
+    if (observerRetryCount >= MAX_OBSERVER_RETRIES) {
+      log(`未找到聊天容器 #chat，已重试 ${MAX_OBSERVER_RETRIES} 次，停止重试。可能当前页面不是聊天页面。`);
+      return;
+    }
+    log(`未找到聊天容器 #chat，延迟重试... (${observerRetryCount}/${MAX_OBSERVER_RETRIES})`);
     setTimeout(setupMutationObserver, 1000);
     return;
   }
+
+  // 找到了，重置计数
+  observerRetryCount = 0;
 
   // 创建防抖处理函数
   const debouncedProcessNewMessage = debounce((element) => {

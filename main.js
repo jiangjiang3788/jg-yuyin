@@ -37,29 +37,42 @@ export async function init(options = {}) {
   const mountSelector = options.mountSelector || '#extensions_settings';
   const version = options.version || Date.now();
 
-  log('开始初始化插件...');
+  log('========================================');
+  log('🍶 jg-yuyin 酒馆助手版开始初始化');
   log('BASE_URL:', BASE_URL);
+  log('mountSelector:', mountSelector);
+  log('version:', version);
+  log('========================================');
 
   try {
     // 1. 注入 CSS
+    log('步骤 1/5: 注入 CSS...');
     await injectCSS({
       cssUrl: `${BASE_URL}/style.css?v=${version}`
     });
 
     // 2. 注入 UI
+    log('步骤 2/5: 注入 UI...');
     await injectUI({
       htmlUrl: `${BASE_URL}/example.html?v=${version}`,
       mountSelector: mountSelector
     });
 
     // 3. 加载自定义音色列表
-    await loadCustomVoices();
+    log('步骤 3/5: 加载自定义音色列表...');
+    try {
+      await loadCustomVoices();
+    } catch (e) {
+      log('加载自定义音色失败（可能未配置 API Key），继续初始化:', e.message);
+    }
 
     // 4. 更新 UI
+    log('步骤 4/5: 更新 UI...');
     updateVoiceOptions();
     updateCustomVoicesList();
 
     // 5. 设置消息监听器（自动朗读）
+    log('步骤 5/5: 设置消息监听器...');
     setupMessageListener();
 
     // 6. 监听设置变更，自动更新 UI
@@ -69,10 +82,13 @@ export async function init(options = {}) {
     });
 
     initialized = true;
+    log('========================================');
     log('🍶 jg-yuyin 酒馆助手版初始化完成！');
+    log('========================================');
 
   } catch (err) {
     error('插件初始化失败:', err);
+    error('错误堆栈:', err.stack);
     throw err;
   }
 }

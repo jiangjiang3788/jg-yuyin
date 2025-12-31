@@ -70,8 +70,9 @@ jg-yuyin/
 ├── example-tavern-helper-entry.js  # 酒馆助手粘贴入口
 ├── example.html                 # UI 模板
 ├── style.css                    # 样式文件
-├── index.js                     # [旧版] SillyTavern 扩展入口
-└── manifest.json                # [旧版] 扩展清单
+└── legacy-extension/            # [旧版] SillyTavern 扩展（已弃用）
+    ├── index.js
+    └── manifest.json
 ```
 
 ---

@@ -22,16 +22,59 @@ export async function injectCSS({ cssUrl }) {
       throw new Error(`HTTP ${response.status}`);
     }
     const cssText = await response.text();
+    log('CSS 加载成功，长度:', cssText.length);
 
-    // 创建 style 元素并插入
-    const styleElement = document.createElement('style');
-    styleElement.id = 'jg-yuyin-styles';
-    styleElement.textContent = cssText;
-    document.head.appendChild(styleElement);
+    // 检查是否已存在
+    const existingStyle = document.getElementById('jg-yuyin-styles');
+    if (existingStyle) {
+      log('CSS 已存在，更新内容');
+      existingStyle.textContent = cssText;
+    } else {
+      // 创建 style 元素并插入
+      const styleElement = document.createElement('style');
+      styleElement.id = 'jg-yuyin-styles';
+      styleElement.textContent = cssText;
+      document.head.appendChild(styleElement);
+    }
 
     log('CSS 注入成功');
   } catch (err) {
     error('CSS 注入失败:', err);
+    // 注入一些基本样式作为降级
+    log('注入基本降级样式');
+    const fallbackStyle = document.createElement('style');
+    fallbackStyle.id = 'jg-yuyin-styles-fallback';
+    fallbackStyle.textContent = `
+      .siliconflow-extension-settings {
+        padding: 10px;
+        background: var(--SmartThemeBlurTintColor, #1a1a2e);
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+      .siliconflow-extension-settings .setting-item {
+        margin: 10px 0;
+      }
+      .siliconflow-extension-settings input,
+      .siliconflow-extension-settings select,
+      .siliconflow-extension-settings textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid var(--SmartThemeBorderColor, #444);
+        border-radius: 4px;
+        background: var(--SmartThemeBlurTintColor, #2a2a3e);
+        color: var(--SmartThemeBodyColor, #fff);
+      }
+      .siliconflow-extension-settings .menu_button {
+        padding: 8px 16px;
+        margin: 5px;
+        cursor: pointer;
+      }
+      #jg-yuyin-floating-panel {
+        font-family: inherit;
+      }
+    `;
+    document.head.appendChild(fallbackStyle);
   }
 }
 
@@ -54,21 +97,50 @@ export async function injectUI({ htmlUrl, mountSelector = '#extensions_settings'
       throw new Error(`HTTP ${response.status}`);
     }
     let htmlText = await response.text();
+    log('HTML 加载成功，长度:', htmlText.length);
 
-    // 查找挂载点
-    const mountPoint = document.querySelector(mountSelector);
+    // 尝试多个可能的挂载点
+    const possibleSelectors = [
+      mountSelector,
+      '#extensions_settings',
+      '#extensions_settings2',
+      '.extensions_block',
+      '#right-nav-panel',
+      '#extensionsMenu',
+      'body'
+    ];
+
+    let mountPoint = null;
+    let usedSelector = null;
+
+    for (const selector of possibleSelectors) {
+      const element = document.querySelector(selector);
+      if (element) {
+        // 对于 body，我们使用浮动面板
+        if (selector === 'body') {
+          log('未找到合适的挂载点，使用浮动面板');
+          createFloatingPanel(htmlText);
+          return;
+        }
+        mountPoint = element;
+        usedSelector = selector;
+        break;
+      }
+    }
+
     if (!mountPoint) {
-      error('未找到挂载点:', mountSelector);
-      // 尝试创建一个浮动面板作为备选
+      log('未找到任何挂载点，使用浮动面板');
       createFloatingPanel(htmlText);
       return;
     }
+
+    log('找到挂载点:', usedSelector);
 
     // 插入 HTML
     mountPoint.insertAdjacentHTML('beforeend', htmlText);
     uiInjected = true;
 
-    log('HTML UI 注入成功');
+    log('HTML UI 注入成功到:', usedSelector);
 
     // 绑定事件处理器
     bindUIHandlers();
@@ -81,6 +153,13 @@ export async function injectUI({ htmlUrl, mountSelector = '#extensions_settings'
 
   } catch (err) {
     error('UI 注入失败:', err);
+    // 即使失败也尝试创建浮动面板
+    try {
+      log('尝试创建备用浮动面板');
+      createFloatingPanel('<div class="siliconflow-extension-settings"><h3>jg-yuyin 加载失败</h3><p>请检查控制台错误信息</p></div>');
+    } catch (e) {
+      error('备用面板创建也失败:', e);
+    }
   }
 }
 
