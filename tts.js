@@ -98,13 +98,17 @@ export async function generateTTS(text, options = {}) {
     const gain = options.gain !== undefined ? options.gain : (settings.ttsGain || 0);
 
     // 判断是自定义音色还是预设音色
+    // 规则：如果 voiceValue 含 ":"（例如 speech:xxx / custom:xxx / 任何URI），则直接当作自定义音色参数传给 API
+    // 否则当作预设音色，拼成 `FunAudioLLM/CosyVoice2-0.5B:${voiceValue}`
     let voiceParam;
-    if (voiceValue.startsWith("speech:")) {
-      // 自定义音色，直接使用URI
+    if (voiceValue.includes(":")) {
+      // 自定义音色（包含冒号的URI格式），直接使用
       voiceParam = voiceValue;
+      log('使用自定义音色URI:', voiceParam);
     } else {
       // 预设音色，使用模型:音色格式
       voiceParam = `FunAudioLLM/CosyVoice2-0.5B:${voiceValue}`;
+      log('使用预设音色:', voiceParam);
     }
 
     const requestBody = {

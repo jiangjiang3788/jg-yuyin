@@ -7,8 +7,9 @@ import { testConnection, generateTTS, loadCustomVoices, uploadVoice, deleteCusto
 import { log, error, showToast } from './utils.js';
 
 // 版本信息
-const UI_VERSION = '2025-12-31_21-38';
+const UI_VERSION = '2025-12-31_22-00';
 console.log('🍶 jg-yuyin ui.js 模块版本:', UI_VERSION);
+console.log('📦 ui.js 修改: 确保UI注入后正确绑定事件和渲染、优化浮动面板');
 
 // UI 状态
 let uiInjected = false;

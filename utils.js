@@ -59,13 +59,19 @@ export function error(message, ...args) {
 
 /**
  * 从消息中提取需要朗读的文本
+ * 三态逻辑：
+ * - marked: 设置了标记且找到匹配内容，只读标记内文本
+ * - full: 没设置标记（任意一个为空），读全文
+ * - skip: 设置了标记但没找到匹配内容，跳过朗读
+ * 
  * @param {string} message - 原始消息文本
  * @param {string} startMark - 开始标记
  * @param {string} endMark - 结束标记
  * @returns {{ text: string|null, mode: 'marked'|'full'|'skip' }} 提取结果
  */
 export function extractSpeakText(message, startMark, endMark) {
-  // 如果没有设置标记，返回全文
+  // 如果任意一个标记为空，返回全文
+  // 规则：start+end 都有才提取标记内；任意一个为空则读全文
   if (!startMark || !endMark) {
     return { text: message, mode: 'full' };
   }

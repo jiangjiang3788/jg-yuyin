@@ -15,8 +15,8 @@ import { setupMessageListener } from './listener.js';
 import { log, error } from './utils.js';
 
 // 版本信息
-const MODULE_VERSION = '2025-12-31_21-38';
-const MODULE_CHANGES = '修复设置面板显示、优化消息监听、添加版本日志';
+const MODULE_VERSION = '2025-12-31_22-00';
+const MODULE_CHANGES = '修复UI注入顺序、优化三态文本提取、改进自定义音色判断';
 
 // 输出版本信息
 console.log('🍶 jg-yuyin main.js 模块版本:', MODULE_VERSION);

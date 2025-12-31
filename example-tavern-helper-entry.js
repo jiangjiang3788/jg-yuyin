@@ -16,8 +16,8 @@
   'use strict';
 
   // ============ 版本信息 ============
-  const VERSION = '2025-12-31_21-38';
-  const CHANGES = '修复设置面板显示、优化消息监听、添加版本日志';
+  const VERSION = '2025-12-31_22-00';
+  const CHANGES = '修复UI注入顺序、优化三态文本提取、改进自定义音色判断';
   
   console.log('🍶 jg-yuyin 酒馆助手版 加载版本:', VERSION);
   console.log('📦 修改内容:', CHANGES);

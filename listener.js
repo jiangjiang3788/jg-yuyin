@@ -13,8 +13,9 @@ import { generateTTS, audioState } from './tts.js';
 import { extractSpeakText, log, debounce } from './utils.js';
 
 // 版本信息
-const LISTENER_VERSION = '2025-12-31_21-38';
+const LISTENER_VERSION = '2025-12-31_22-00';
 console.log('🍶 jg-yuyin listener.js 模块版本:', LISTENER_VERSION);
+console.log('📦 listener.js 修改: 优化三态逻辑、增加延迟时间、改进去重策略');
 
 // 监听状态
 const listenerState = {
@@ -109,7 +110,7 @@ function handleCharacterMessage(messageId) {
     const message = messageElement.find('.mes_text').text();
     processMessage(message, 'character');
 
-  }, 1000); // 延迟1000ms等待DOM完全更新
+  }, 1000); // 延迟1000ms等待DOM完全更新（角色消息需要更长时间等待世界书/CoT渲染）
 }
 
 /**
