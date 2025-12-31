@@ -1,8 +1,9 @@
 
 
 {
+  "_deprecated_notice": "此版本为 SillyTavern Extension 旧版，酒馆助手版请使用 main.js + example-tavern-helper-entry.js",
   "display_name": "❤酱酱语音",
-  "description": "用于 SillyTavern 的语音",
+  "description": "用于 SillyTavern 的语音（酒馆助手版请使用 main.js）",
   "version": "1.0.0",
   "author": "酱酱",
   "loading_order": 100,

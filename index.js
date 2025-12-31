@@ -1,3 +1,17 @@
+/**
+ * ⚠️ 此版本为 SillyTavern Extension 旧版
+ * 
+ * 酒馆助手（Tavern Helper / JS-Slash-Runner）版请使用：
+ * - main.js + example-tavern-helper-entry.js
+ * 
+ * 使用方法：
+ * 1. 在酒馆助手中创建新脚本
+ * 2. 粘贴 example-tavern-helper-entry.js 中的内容
+ * 3. 运行脚本即可
+ * 
+ * 详见 README.md
+ */
+
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 import { saveSettingsDebounced, eventSource, event_types } from "../../../../script.js";
 
