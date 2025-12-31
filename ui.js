@@ -6,6 +6,10 @@ import { getSettings, saveSettings, getCustomVoices } from './settings.js';
 import { testConnection, generateTTS, loadCustomVoices, uploadVoice, deleteCustomVoice, TTS_MODELS } from './tts.js';
 import { log, error, showToast } from './utils.js';
 
+// 版本信息
+const UI_VERSION = '2025-12-31_21-38';
+console.log('🍶 jg-yuyin ui.js 模块版本:', UI_VERSION);
+
 // UI 状态
 let uiInjected = false;
 

@@ -14,6 +14,14 @@ import { loadCustomVoices, generateTTS } from './tts.js';
 import { setupMessageListener } from './listener.js';
 import { log, error } from './utils.js';
 
+// 版本信息
+const MODULE_VERSION = '2025-12-31_21-38';
+const MODULE_CHANGES = '修复设置面板显示、优化消息监听、添加版本日志';
+
+// 输出版本信息
+console.log('🍶 jg-yuyin main.js 模块版本:', MODULE_VERSION);
+console.log('📦 模块修改内容:', MODULE_CHANGES);
+
 // 默认远程 URL 基础路径
 const DEFAULT_BASE_URL = 'https://jiangjiang3788.github.io/jg-yuyin';
 

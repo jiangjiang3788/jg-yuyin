@@ -1,11 +1,20 @@
 /**
  * jg-yuyin 酒馆助手版 - 自动朗读监听模块
  * 支持 SillyTavern 事件系统和 MutationObserver 两种模式
+ * 
+ * 监听事件优先级：
+ * 1. CHARACTER_MESSAGE_RENDERED / USER_MESSAGE_RENDERED（推荐）
+ * 2. MESSAGE_RECEIVED / MESSAGE_SENT（备选）
+ * 3. MutationObserver（降级方案）
  */
 
 import { getSettings } from './settings.js';
 import { generateTTS, audioState } from './tts.js';
 import { extractSpeakText, log, debounce } from './utils.js';
+
+// 版本信息
+const LISTENER_VERSION = '2025-12-31_21-38';
+console.log('🍶 jg-yuyin listener.js 模块版本:', LISTENER_VERSION);
 
 // 监听状态
 const listenerState = {
@@ -14,7 +23,8 @@ const listenerState = {
   lastProcessedMessageId: null,
   lastProcessedUserMessageId: null,
   processingTimeout: null,
-  processedElements: new WeakSet() // 用于 MutationObserver 模式的去重
+  processedElements: new WeakSet(), // 用于 MutationObserver 模式的去重
+  processedMessageIds: new Set() // 用于事件模式的去重
 };
 
 /**
