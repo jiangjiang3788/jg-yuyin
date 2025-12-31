@@ -1,12 +1,14 @@
-{
-    "display_name": "语音插件",
-    "loading_order": 1,
-    "requires": [],
-    "optional": [],
-    "js": "index.js",
-    "css": "style.css",
-    "author": "酱酱",
-    "version": "1.0.0",
-    "homePage": "yourUrlHere"
-}
 
+
+{
+  "display_name": "❤酱酱语音",
+  "description": "用于 SillyTavern 的语音",
+  "version": "1.0.0",
+  "author": "酱酱",
+  "loading_order": 100,
+  "js": "index.js",
+  "css": "style.css",
+  "settings": {
+    "settings_page": "settings.html"
+  }
+}
